@@ -1,5 +1,6 @@
 import { Header } from '../components/Header'
 import { Sidebar } from '../components/Sidebar'
+import { Routes } from './Routes'
 import './styles/global.css'
 
 export function App() {
@@ -9,9 +10,7 @@ export function App() {
       <div className='flex-1 flex flex-col max-h-screen'>
         <Header />
 
-        <main className='flex-1 flex items-center justify-center text-rotion-400'>
-          Seleciona ou crie um documento
-        </main>
+        <Routes />
       </div>
     </div>
   )
