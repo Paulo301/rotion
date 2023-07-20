@@ -24,7 +24,7 @@ ipcMain.handle(IPC.DOCUMENTS.CREATE, async (): Promise<CreateDocumentResponse> =
 
   const document: Document = {
     id,
-    title: "Untitle",
+    title: "Untitled",
   };
 
   store.set(`documents.${id}`, document);
