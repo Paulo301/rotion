@@ -1,15 +1,50 @@
 import { ipcMain } from "electron";
 import { IPC } from "@shared/constants/ipc";
-import { FetchAllDocumentsResponse } from "@shared/types/ipc";
+import { CreateDocumentResponse, DeleteDocumentResquest, Document, FetchAllDocumentsResponse, FetchDocumentResponse, FetchDocumentResquest, SaveDocumentRequest } from "@shared/types/ipc";
+import { store } from "./store";
+import { randomUUID } from "crypto";
 
 ipcMain.handle(IPC.DOCUMENTS.FETCH_ALL, async (): Promise<FetchAllDocumentsResponse> => {
+  return {
+    data: Object.values(store.get('documents')),
+  }
+});
+
+ipcMain.handle(IPC.DOCUMENTS.FETCH, 
+  async (_, { id }: FetchDocumentResquest): Promise<FetchDocumentResponse> => {
+    const document: Document = store.get(`documents.${id}`);
+
+    return {
+      data: document,
+    }
+});
+
+ipcMain.handle(IPC.DOCUMENTS.CREATE, async (): Promise<CreateDocumentResponse> => {
+  const id = randomUUID();
+
+  const document: Document = {
+    id,
+    title: "Untitle",
+  };
+
+  store.set(`documents.${id}`, document);
 
   return {
-    data: [
-      { id: '1', title: 'Ignite', content: '' },
-      { id: '2', title: 'Discover', content: '' },
-      { id: '3', title: 'Rocketseat', content: '' },
-      { id: '4', title: 'Docs', content: '' },
-    ]
+    data: document,
   }
+});
+
+ipcMain.handle(IPC.DOCUMENTS.SAVE, 
+  async (_, { id, title, content }: SaveDocumentRequest): Promise<void> => {
+    store.set(`documents.${id}`, {
+      id, 
+      title, 
+      content,
+    });
+});
+
+ipcMain.handle(IPC.DOCUMENTS.DELETE, 
+  async (_, { id }: DeleteDocumentResquest): Promise<void> => {
+    // @ts-ignore
+    store.delete(`documents.${id}`);
 });
